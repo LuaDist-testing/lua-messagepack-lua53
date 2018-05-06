@@ -40,9 +40,9 @@ error_like( function ()
             "indirect cycle" )
 
 error_like( function ()
-                mp.unpack(string.char(193)) -- 0xC1
+                mp.unpack(string.char(0xC1))
             end,
-            "unpack 'reserved193' is unimplemented" )
+            "unpack '0xC1' is unimplemented" )
 
 is( mp.unpack(mp.pack("text")), "text" )
 

@@ -1,7 +1,7 @@
 package = 'lua-MessagePack-lua53'
 version = '@version@-@rev@'
 source = {
-    url = 'http://github.com/fperrad/fperrad.github.io/raw/master/dist/lua-messagepack-@version@.tar.gz',
+    url = 'http://github.com/fperrad/lua-MessagePack/raw/releases/lua-messagepack-@version@.tar.gz',
     md5 = '@md5@',
     dir = 'lua-MessagePack-@version@',
 }

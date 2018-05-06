@@ -85,7 +85,7 @@ if not mp.small_lua then
     end
 end
 
-plan(10 * (mp.small_lua and 60 or 69))
+plan(9 * (mp.small_lua and 60 or 69))
 
 -- see http://github.com/msgpack/msgpack/blob/master/test/cases_gen.rb
 local source = [===[
@@ -286,18 +286,6 @@ mp.set_array'without_hole'
 
 diag("set_number'float'")
 mp.set_number'float'
-i = 1
-for _, val in mp.unpacker(mpac) do
-    if type(val) == 'table' then
-        is_deeply(mp.unpack(mp.pack(data[i])), data[i], "unpack/pack " .. data[i+1])
-    else
-        is(mp.unpack(mp.pack(data[i])), data[i], "unpack/pack " .. data[i+1])
-    end
-    i = i + 2
-end
-
-diag("set_number'integer'")
-mp.set_number'integer'
 i = 1
 for _, val in mp.unpacker(mpac) do
     if type(val) == 'table' then

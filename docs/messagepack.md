@@ -24,7 +24,7 @@ the _interesting_ value is the second.
 #### set_number( str )
 
 Configures the behaviour of `pack`.
-The valid options are `'double'`, `'float'` and `'integer'`.
+The valid options are `'double'` and `'float'`.
 The default is _usually_ `'double'`.
 
 #### set_integer( str ) DEPRECATED
