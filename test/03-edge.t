@@ -2,7 +2,7 @@
 
 require 'Test.More'
 
-plan(32)
+plan(35)
 
 local mp = require 'MessagePack'
 
@@ -68,3 +68,11 @@ buffer = {}
 mp.packers.double(buffer, 0)
 is( mp.unpack(table.concat(buffer)), 0)
 
+local mpac = string.char(0x82, 0xC0, 0x01, 0xA2, 0x69, 0x64, 0x02)
+t = mp.unpack(mpac)
+is( t.id, 2, "unpack map with nil as table index" )
+
+mp.sentinel = {}
+t = mp.unpack(mpac)
+is( t[mp.sentinel], 1, "unpack using a sentinel for nil as table index" )
+is( t.id, 2 )

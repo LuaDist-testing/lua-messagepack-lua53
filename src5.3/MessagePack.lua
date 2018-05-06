@@ -1,5 +1,5 @@
 --
--- lua-MessagePack : <http://fperrad.github.com/lua-MessagePack/>
+-- lua-MessagePack : <http://fperrad.github.io/lua-MessagePack/>
 --
 
 local assert = assert
@@ -23,7 +23,7 @@ local function hexadump (s)
 end
 --]]
 
-_ENV = nil
+local _ENV = nil
 local m = {}
 
 --[[ debug only
@@ -446,7 +446,13 @@ local function unpack_map (c, n)
     local decode = unpackers['any']
     for i = 1, n do
         local k = decode(c)
-        t[k] = decode(c)
+        local val = decode(c)
+        if k == nil then
+            k = m.sentinel
+        end
+        if k ~= nil then
+            t[k] = val
+        end
     end
     return t
 end
@@ -880,7 +886,7 @@ function m.unpacker (src)
 end
 
 set_string'string_compat'
-set_integer'signed'
+set_integer'unsigned'
 if math_type(0.0) == math_type(0) then
     set_number'integer'
 elseif #pack('n', 0.0) == 4 then
@@ -892,7 +898,7 @@ else
 end
 set_array'without_hole'
 
-m._VERSION = "0.3.2"
+m._VERSION = '0.3.3'
 m._DESCRIPTION = "lua-MessagePack : a pure Lua implementation"
 m._COPYRIGHT = "Copyright (c) 2012-2015 Francois Perrad"
 return m

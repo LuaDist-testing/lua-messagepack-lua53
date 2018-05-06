@@ -81,11 +81,11 @@
 The valid options are <code>'double'</code>, <code>'float'</code> and <code>'integer'</code>.
 The default is <em>usually</em> <code>'double'</code>.</p>
 
-<h4><code>set_integer( str )</code></h4>
+<h4><code>set_integer( str )</code> <strong>DEPRECATED</strong></h4>
 
 <p>Configures the behaviour of <code>pack</code>.
 The valid options are <code>'signed'</code> and <code>'unsigned'</code>.
-The default is <code>'signed'</code>.</p>
+The default is <code>'unsigned'</code>.</p>
 
 <h4><code>set_array( str )</code></h4>
 
@@ -128,6 +128,11 @@ The default is <code>'string_compat'</code> in order to be compatible with old i
   <li>With <code>set_array'always_as_map'</code>, all Lua <code>table</code> are converted
   into a <strong>MessagePack</strong> <code>map</code>.</li>
 
+  <li><strong>Lua</strong> does not allow <code>nil</code> as <code>table</code> index, by default,
+  the deserialization of this kind of <strong>MessagePack</strong> <code>map</code>
+  skips the key/value pair. The value could preserved by defining the module member
+  <code>sentinel</code> which is used as key.</li>
+
   <li>LIMITATION : <strong>MessagePack</strong> cannot handle
   data with <em>cyclic reference</em>.</li>
 </ul>
@@ -167,7 +172,6 @@ return mp
 local mp = require 'MessagePack'
 
 mp.set_number'float'
-mp.set_integer'unsigned'
 mp.set_array'with_hole'
 mp.set_string'string'
 
