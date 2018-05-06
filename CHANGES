@@ -1,5 +1,8 @@
 Revision history for lua-MessagePack
 
+0.3.7  Sun Dec  4 17:30:00 2016
+	better use of string.pack (Lua 5.3)
+
 0.3.6  Wed Nov 30 09:30:00 2016
 	fix pack float with Lua 5.3
 	fix behaviour with LUA_32BITS
