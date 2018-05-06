@@ -128,10 +128,10 @@ The default is <code>'string_compat'</code> in order to be compatible with old i
   <li>With <code>set_array'always_as_map'</code>, all Lua <code>table</code> are converted
   into a <strong>MessagePack</strong> <code>map</code>.</li>
 
-  <li><strong>Lua</strong> does not allow <code>nil</code> as <code>table</code> index, by default,
-  the deserialization of this kind of <strong>MessagePack</strong> <code>map</code>
-  skips the key/value pair. The value could preserved by defining the module member
-  <code>sentinel</code> which is used as key.</li>
+  <li><strong>Lua</strong> does not allow <code>nil</code> and NaN (<code>0/0</code>)
+  as <code>table</code> index, by default, the deserialization of this kind of
+  <strong>MessagePack</strong> <code>map</code> skips the key/value pair. The value
+  could preserved by defining the module member <code>sentinel</code> which is used as key.</li>
 
   <li>LIMITATION : <strong>MessagePack</strong> cannot handle
   data with <em>cyclic reference</em>.</li>
@@ -165,8 +165,47 @@ end
 return mp
 </pre>
 
+<h3>Advanced usages</h3>
+
+<p>The following Lua hack allows to have several instances of the module
+<strong>MessagePack</strong>, each one with its own settings.</p>
+
+<pre class="example">
+local mp1 = require 'MessagePack'
+package.loaded['MessagePack'] = nil     -- the hack is here
+local mp2 = require 'MessagePack'
+
+mp1.set_array'without_hole'
+mp2.set_array'always_as_map'
+</pre>
+
+<p>When global settings are not enough, the following recipe allows
+to use a specific encoding for only a part of a data structure.</p>
+
+<pre class="example">
+local mp = require 'MessagePack'
+mp.packers['function'] = function (buffer, fct)
+    fct(buffer)
+end
+
+local function BINARY (str)
+    return function (buffer)
+        mp.packers['binary'](buffer, str)
+    end
+end
+
+local function FLOAT (n)
+    return function (buffer)
+        mp.packers['float'](buffer, n)
+    end
+end
+
+mp.pack { 'encoded_with_global_settings', BINARY'encoded_as_binary', 42, FLOAT(42) }
+</pre>
 
 <h2><a name="examples"></a>Examples</h2>
+
+<p>Basic usage</p>
 
 <pre class="example">
 local mp = require 'MessagePack'

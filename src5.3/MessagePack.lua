@@ -447,7 +447,7 @@ local function unpack_map (c, n)
     for i = 1, n do
         local k = decode(c)
         local val = decode(c)
-        if k == nil then
+        if k == nil or k ~= k then
             k = m.sentinel
         end
         if k ~= nil then
@@ -895,12 +895,15 @@ elseif #pack('n', 0.0) == 4 then
 else
     m.full64bits = true
     set_number'double'
+    if #pack('n', 0.0) > 8 then
+        m.long_double = true
+    end
 end
 set_array'without_hole'
 
-m._VERSION = '0.3.3'
+m._VERSION = '0.3.4'
 m._DESCRIPTION = "lua-MessagePack : a pure Lua implementation"
-m._COPYRIGHT = "Copyright (c) 2012-2015 Francois Perrad"
+m._COPYRIGHT = "Copyright (c) 2012-2016 Francois Perrad"
 return m
 --
 -- This library is licensed under the terms of the MIT/X11 license,

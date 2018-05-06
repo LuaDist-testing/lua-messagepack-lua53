@@ -2,15 +2,15 @@
 
 require 'Test.More'
 
-plan(35)
+plan(41)
 
 local mp = require 'MessagePack'
 
-is( mp.unpack(mp.pack(1/0)), 1/0, "inf" )
+is( mp.unpack(mp.pack(1.0/0.0)), 1.0/0.0, "inf" )
 
-is( mp.unpack(mp.pack(-1/0)), -1/0, "-inf" )
+is( mp.unpack(mp.pack(-1.0/0.0)), -1.0/0.0, "-inf" )
 
-local nan = mp.unpack(mp.pack(0/0))
+local nan = mp.unpack(mp.pack(0.0/0.0))
 type_ok( nan, 'number', "nan" )
 ok( nan ~= nan )
 
@@ -48,13 +48,25 @@ mp.set_array'always_as_map'
 is( mp.pack(t):byte(), 0x80, "empty table as map" )
 
 mp.set_number'float'
-is( mp.pack(3.402824e+38), mp.pack(1/0), "float 3.402824e+38")
-is( mp.pack(7e42), mp.pack(1/0), "inf (downcast double -> float)")
-is( mp.pack(-7e42), mp.pack(-1/0), "-inf (downcast double -> float)")
-is( mp.unpack(mp.pack(7e42)), 1/0, "inf (downcast double -> float)")
-is( mp.unpack(mp.pack(-7e42)), -1/0, "-inf (downcast double -> float)")
-is( mp.unpack(mp.pack(7e-46)), 0, "epsilon (downcast double -> float)")
-is( mp.unpack(mp.pack(-7e-46)), -0, "-epsilon (downcast double -> float)")
+is( mp.pack(3.402824e+38), mp.pack(1.0/0.0), "float 3.402824e+38")
+is( mp.pack(7e42), mp.pack(1.0/0.0), "inf (downcast double -> float)")
+is( mp.pack(-7e42), mp.pack(-1.0/0.0), "-inf (downcast double -> float)")
+is( mp.unpack(mp.pack(7e42)), 1.0/0.0, "inf (downcast double -> float)")
+is( mp.unpack(mp.pack(-7e42)), -1.0/0.0, "-inf (downcast double -> float)")
+is( mp.unpack(mp.pack(7e-46)), 0.0, "epsilon (downcast double -> float)")
+is( mp.unpack(mp.pack(-7e-46)), -0.0, "-epsilon (downcast double -> float)")
+
+if mp.long_double then
+    mp.set_number'double'
+    is( mp.pack(7e400), mp.pack(1.0/0.0), "inf (downcast long double -> double)")
+    is( mp.pack(-7e400), mp.pack(-1.0/0.0), "-inf (downcast long double -> double)")
+    is( mp.unpack(mp.pack(7e400)), 1.0/0.0, "inf (downcast long double -> double)")
+    is( mp.unpack(mp.pack(-7e400)), -1.0/0.0, "-inf (downcast long double -> double)")
+    is( mp.unpack(mp.pack(7e-400)), 0.0, "epsilon (downcast long double -> double)")
+    is( mp.unpack(mp.pack(-7e-400)), -0.0, "-epsilon (downcast long double -> double)")
+else
+    skip("no long double", 6)
+end
 
 mp.set_integer'unsigned'
 is( mp.unpack(mp.pack(0xF0)), 0xF0, "packint 0xF0")

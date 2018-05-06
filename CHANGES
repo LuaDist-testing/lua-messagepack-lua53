@@ -1,5 +1,9 @@
 Revision history for lua-MessagePack
 
+0.3.4  Fri Feb  5 10:30:00 2016
+	handle long double
+	handle NaN (like nil) as table index
+
 0.3.3  Sat May 30 16:30:00 2015
 	shadow _ENV (see PR #12)
 	unsigned packer becomes the default for integer (see issue #13)
