@@ -14,32 +14,23 @@ local data = {
     0,                  "0 uint8",
     0,                  "0 uint16",
     0,                  "0 uint32",
-    0,                  "0 uint64",
     0,                  "0 int8",
     0,                  "0 int16",
     0,                  "0 int32",
-    0,                  "0 int64",
     -1,                 "-1 Negative FixNum",
     -1,                 "-1 int8",
     -1,                 "-1 int16",
     -1,                 "-1 int32",
-    -1,                 "-1 int64",
     127,                "127 Positive FixNum",
     127,                "127 uint8",
     255,                "255 uint16",
     65535,              "65535 uint32",
-    4294967295,         "4294967295 uint64",
     -32,                "-32 Negative FixNum",
     -32,                "-32 int8",
     -128,               "-128 int16",
     -32768,             "-32768 int32",
-    -2147483648,        "-2147483648 int64",
     0.0,                "0.0 float",
-    0.0,                "0.0 double",
     -0.0,               "-0.0 float",
-    -0.0,               "-0.0 double",
-    1.0,                "1.0 double",
-    -1.0,               "-1.0 double",
     "a",                "\"a\" FixStr",
     "a",                "\"a\" str 8",
     "a",                "\"a\" str 16",
@@ -78,8 +69,23 @@ local data = {
     nil,                "ext 16",
     nil,                "ext 32",
 }
+if not mp.small_lua then
+    for i, v in ipairs({
+    0,                  "0 uint64",
+    0,                  "0 int64",
+    -1,                 "-1 int64",
+    4294967295,         "4294967295 uint64",
+    -2147483648,        "-2147483648 int64",
+    0.0,                "0.0 double",
+    -0.0,               "-0.0 double",
+    1.0,                "1.0 double",
+    -1.0,               "-1.0 double",
+}) do
+        data[60*2+i] = v
+    end
+end
 
-plan(10 * 69)
+plan(10 * (mp.small_lua and 60 or 69))
 
 -- see http://github.com/msgpack/msgpack/blob/master/test/cases_gen.rb
 local source = [===[
@@ -90,32 +96,23 @@ c0                              # nil
 cc 00                           # 0 uint8
 cd 00 00                        # 0 uint16
 ce 00 00 00 00                  # 0 uint32
-cf 00 00 00 00 00 00 00 00      # 0 uint64
 d0 00                           # 0 int8
 d1 00 00                        # 0 int16
 d2 00 00 00 00                  # 0 int32
-d3 00 00 00 00 00 00 00 00      # 0 int64
 ff                              # -1 Negative FixNum
 d0 ff                           # -1 int8
 d1 ff ff                        # -1 int16
 d2 ff ff ff ff                  # -1 int32
-d3 ff ff ff ff ff ff ff ff      # -1 int64
 7f                              # 127 Positive FixNum
 cc 7f                           # 127 uint8
 cd 00 ff                        # 255 uint16
 ce 00 00 ff ff                  # 65535 uint32
-cf 00 00 00 00 ff ff ff ff      # 4294967295 uint64
 e0                              # -32 Negative FixNum
 d0 e0                           # -32 int8
 d1 ff 80                        # -128 int16
 d2 ff ff 80 00                  # -32768 int32
-d3 ff ff ff ff 80 00 00 00      # -2147483648 int64
 ca 00 00 00 00                  # 0.0 float
-cb 00 00 00 00 00 00 00 00      # 0.0 double
 ca 80 00 00 00                  # -0.0 float
-cb 80 00 00 00 00 00 00 00      # -0.0 double
-cb 3f f0 00 00 00 00 00 00      # 1.0 double
-cb bf f0 00 00 00 00 00 00      # -1.0 double
 a1 61                           # "a" FixStr
 d9 01 61                        # "a" str 8
 da 00 01 61                     # "a" str 16
@@ -154,6 +151,19 @@ c7 01 08 61                     # ext 8
 c8 00 01 16 61                  # ext 16
 c9 00 00 00 01 32 61            # ext 32
 ]===]
+if not mp.small_lua then
+    source = source .. [===[
+cf 00 00 00 00 00 00 00 00      # 0 uint64
+d3 00 00 00 00 00 00 00 00      # 0 int64
+d3 ff ff ff ff ff ff ff ff      # -1 int64
+cf 00 00 00 00 ff ff ff ff      # 4294967295 uint64
+d3 ff ff ff ff 80 00 00 00      # -2147483648 int64
+cb 00 00 00 00 00 00 00 00      # 0.0 double
+cb 80 00 00 00 00 00 00 00      # -0.0 double
+cb 3f f0 00 00 00 00 00 00      # 1.0 double
+cb bf f0 00 00 00 00 00 00      # -1.0 double
+]===]
+end
 
 source = source:gsub('#[^\n]+', '')
 local t = {}
@@ -236,21 +246,8 @@ for _, val in mp.unpacker(mpac) do
 end
 mp.set_string'string_compat'
 
-diag("set_integer'unsigned'")
-mp.set_integer'unsigned'
-i = 1
-for _, val in mp.unpacker(mpac) do
-    if type(val) == 'table' then
-        is_deeply(mp.unpack(mp.pack(data[i])), data[i], "unpack/pack " .. data[i+1])
-    else
-        is(mp.unpack(mp.pack(data[i])), data[i], "unpack/pack " .. data[i+1])
-    end
-    i = i + 2
-end
+diag("set_integer'signed'")
 mp.set_integer'signed'
-
-diag("set_number'float'")
-mp.set_number'float'
 i = 1
 for _, val in mp.unpacker(mpac) do
     if type(val) == 'table' then
@@ -260,19 +257,7 @@ for _, val in mp.unpacker(mpac) do
     end
     i = i + 2
 end
-
-diag("set_number'integer'")
-mp.set_number'integer'
-i = 1
-for _, val in mp.unpacker(mpac) do
-    if type(val) == 'table' then
-        is_deeply(mp.unpack(mp.pack(data[i])), data[i], "unpack/pack " .. data[i+1])
-    else
-        is(mp.unpack(mp.pack(data[i])), data[i], "unpack/pack " .. data[i+1])
-    end
-    i = i + 2
-end
-mp.set_number'double'
+mp.set_integer'unsigned'
 
 diag("set_array'with_hole'")
 mp.set_array'with_hole'
@@ -298,3 +283,27 @@ for _, val in mp.unpacker(mpac) do
     i = i + 2
 end
 mp.set_array'without_hole'
+
+diag("set_number'float'")
+mp.set_number'float'
+i = 1
+for _, val in mp.unpacker(mpac) do
+    if type(val) == 'table' then
+        is_deeply(mp.unpack(mp.pack(data[i])), data[i], "unpack/pack " .. data[i+1])
+    else
+        is(mp.unpack(mp.pack(data[i])), data[i], "unpack/pack " .. data[i+1])
+    end
+    i = i + 2
+end
+
+diag("set_number'integer'")
+mp.set_number'integer'
+i = 1
+for _, val in mp.unpacker(mpac) do
+    if type(val) == 'table' then
+        is_deeply(mp.unpack(mp.pack(data[i])), data[i], "unpack/pack " .. data[i+1])
+    else
+        is(mp.unpack(mp.pack(data[i])), data[i], "unpack/pack " .. data[i+1])
+    end
+    i = i + 2
+end

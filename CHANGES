@@ -1,5 +1,9 @@
 Revision history for lua-MessagePack
 
+0.3.6  Wed Nov 30 09:30:00 2016
+	fix pack float with Lua 5.3
+	fix behaviour with LUA_32BITS
+
 0.3.5  Sat Oct 22 22:30:00 2016
 	fix float/integer detection
 	refactor doc with Markdown and MkDocs

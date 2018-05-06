@@ -6,19 +6,20 @@ plan(41)
 
 local mp = require 'MessagePack'
 
+if mp.small_lua then
+    skip("Small Lua (32 bits)", 2)
+elseif mp.long_double then
+    skip("long double", 2)
+else
+    is( mp.unpack(mp.pack(1.0e+300)), 1.0e+300, "1.0e+300" )
+    is( mp.unpack(mp.pack(math.pi)), math.pi, "pi" )
+end
+
 mp.set_number'float'
 local nan = mp.unpack(mp.pack(0/0))
 type_ok( nan, 'number', "nan" )
 ok( nan ~= nan )
 is( mp.unpack(mp.pack(3.140625)), 3.140625, "3.140625" )
-
-mp.set_number'double'
-is( mp.unpack(mp.pack(1.0e+300)), 1.0e+300, "1.0e+300" )
-if mp.long_double then
-    skip("long double", 1)
-else
-    is( mp.unpack(mp.pack(math.pi)), math.pi, "pi" )
-end
 
 mp.set_integer'signed'
 is( mp.unpack(mp.pack(2^5)), 2^5, "2^5" )

@@ -413,7 +413,7 @@ packers['float'] = function (buffer, n)
                                  sign, 0x00, 0x00, 0x00)
     else
         expo = expo + 0x7E
-        mant = (mant * 2.0 - 1.0) * ldexp(0.5, 24)
+        mant = floor((mant * 2.0 - 1.0) * ldexp(0.5, 24))
         buffer[#buffer+1] = char(0xCA,
                                  sign + floor(expo / 0x2),
                                  (expo % 0x2) * 0x80 + floor(mant / 0x10000),
@@ -445,7 +445,7 @@ packers['double'] = function (buffer, n)
                                  sign, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00)
     else
         expo = expo + 0x3FE
-        mant = (mant * 2.0 - 1.0) * ldexp(0.5, 53)
+        mant = floor((mant * 2.0 - 1.0) * ldexp(0.5, 53))
         buffer[#buffer+1] = char(0xCB,
                                  sign + floor(expo / 0x10),
                                  (expo % 0x10) * 0x10 + floor(mant / 0x1000000000000),
@@ -866,7 +866,7 @@ unpackers['str32'] = function (c)
     c.i = i
     local n = ((b1 * 0x100 + b2) * 0x100 + b3) * 0x100 + b4
     local e = i+n-1
-    if e > j then
+    if e > j or n < 0 then
         c:underflow(e)
         s, i, j = c.s, c.i, c.j
         e = i+n-1
@@ -1028,7 +1028,7 @@ unpackers['ext32'] = function (c)
     i = i+1
     c.i = i
     local e = i+n-1
-    if e > j then
+    if e > j or n < 0 then
         c:underflow(e)
         s, i, j = c.s, c.i, c.j
         e = i+n-1
@@ -1107,14 +1107,14 @@ end
 set_string'string_compat'
 set_integer'unsigned'
 if NUMBER_INTEGRAL then
-    packers['double'] = packers['integer']
-    packers['float'] = packers['integer']
     set_number'integer'
 elseif SIZEOF_NUMBER == 4 then
     maxinteger = 16777215
     mininteger = -maxinteger
-    packers['double'] = packers['float']
     m.small_lua = true
+    unpackers['double'] = nil
+    unpackers['uint64'] = nil
+    unpackers['int64'] = nil
     set_number'float'
 else
     maxinteger = 9007199254740991
@@ -1126,7 +1126,7 @@ else
 end
 set_array'without_hole'
 
-m._VERSION = '0.3.5'
+m._VERSION = '0.3.6'
 m._DESCRIPTION = "lua-MessagePack : a pure Lua implementation"
 m._COPYRIGHT = "Copyright (c) 2012-2016 Francois Perrad"
 return m

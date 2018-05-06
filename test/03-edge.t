@@ -2,7 +2,7 @@
 
 require 'Test.More'
 
-plan(41)
+plan(42)
 
 local mp = require 'MessagePack'
 
@@ -48,6 +48,10 @@ mp.set_array'always_as_map'
 is( mp.pack(t):byte(), 0x80, "empty table as map" )
 
 mp.set_number'float'
+lives_ok( function ()
+              mp.pack(1.5000001)
+          end,
+          "float 1.5000001" )
 is( mp.pack(3.402824e+38), mp.pack(1.0/0.0), "float 3.402824e+38")
 is( mp.pack(7e42), mp.pack(1.0/0.0), "inf (downcast double -> float)")
 is( mp.pack(-7e42), mp.pack(-1.0/0.0), "-inf (downcast double -> float)")
@@ -76,9 +80,13 @@ is( mp.unpack(mp.pack(0xF0000000)), 0xF0000000, "packint 0xF0000000")
 local buffer = {}
 mp.packers.float(buffer, 0)
 is( mp.unpack(table.concat(buffer)), 0)
-buffer = {}
-mp.packers.double(buffer, 0)
-is( mp.unpack(table.concat(buffer)), 0)
+if mp.small_lua then
+    skip("Small Lua (32 bits)", 1)
+else
+    buffer = {}
+    mp.packers.double(buffer, 0)
+    is( mp.unpack(table.concat(buffer)), 0)
+end
 
 local mpac = string.char(0x82, 0xC0, 0x01, 0xA2, 0x69, 0x64, 0x02)
 t = mp.unpack(mpac)

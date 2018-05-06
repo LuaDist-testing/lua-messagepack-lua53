@@ -649,7 +649,7 @@ unpackers['str32'] = function (c)
     i = i+4
     c.i = i
     local e = i+n-1
-    if e > j then
+    if e > j or n < 0 then
         c:underflow(e)
         s, i, j = c.s, c.i, c.j
         e = i+n-1
@@ -809,7 +809,7 @@ unpackers['ext32'] = function (c)
     i = i+1
     c.i = i
     local e = i+n-1
-    if e > j then
+    if e > j or n < 0 then
         c:underflow(e)
         s, i, j = c.s, c.i, c.j
         e = i+n-1
@@ -891,6 +891,9 @@ if math_type(0.0) == math_type(0) then
     set_number'integer'
 elseif #pack('n', 0.0) == 4 then
     m.small_lua = true
+    unpackers['double'] = nil
+    unpackers['uint64'] = nil
+    unpackers['int64'] = nil
     set_number'float'
 else
     m.full64bits = true
@@ -901,7 +904,7 @@ else
 end
 set_array'without_hole'
 
-m._VERSION = '0.3.5'
+m._VERSION = '0.3.6'
 m._DESCRIPTION = "lua-MessagePack : a pure Lua implementation"
 m._COPYRIGHT = "Copyright (c) 2012-2016 Francois Perrad"
 return m
