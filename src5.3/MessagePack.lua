@@ -318,18 +318,18 @@ local set_number = function (number)
         packers['number'] = packers['signed']
     elseif number == 'float' then
         packers['number'] = function (buffer, n)
-            if math_type(n) == 'float' then
-                return packers['float'](buffer, n)
-            else
+            if math_type(n) == 'integer' then
                 return packers['integer'](buffer, n)
+            else
+                return packers['float'](buffer, n)
             end
         end
     elseif number == 'double' then
         packers['number'] = function (buffer, n)
-            if math_type(n) == 'float' then
-                return packers['double'](buffer, n)
-            else
+            if math_type(n) == 'integer' then
                 return packers['integer'](buffer, n)
+            else
+                return packers['double'](buffer, n)
             end
         end
     else
@@ -901,7 +901,7 @@ else
 end
 set_array'without_hole'
 
-m._VERSION = '0.3.4'
+m._VERSION = '0.3.5'
 m._DESCRIPTION = "lua-MessagePack : a pure Lua implementation"
 m._COPYRIGHT = "Copyright (c) 2012-2016 Francois Perrad"
 return m

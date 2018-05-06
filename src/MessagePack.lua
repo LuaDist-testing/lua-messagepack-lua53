@@ -9,6 +9,8 @@ end
 
 local SIZEOF_NUMBER = string.pack and #string.pack('n', 0.0) or 8
 local NUMBER_INTEGRAL = math.type and (math.type(0.0) == math.type(0)) or false
+local maxinteger
+local mininteger
 if not jit and _VERSION < 'Lua 5.3' then
     -- Lua 5.1 & 5.2
     local loadstring = loadstring or load
@@ -461,18 +463,18 @@ local set_number = function (number)
         packers['number'] = packers['signed']
     elseif number == 'float' then
         packers['number'] = function (buffer, n)
-            if floor(n) ~= n or n ~= n or n > 3.40282347e+38 or n < -3.40282347e+38 then
-                return packers['float'](buffer, n)
-            else
+            if floor(n) == n and n < maxinteger and n > mininteger then
                 return packers['integer'](buffer, n)
+            else
+                return packers['float'](buffer, n)
             end
         end
     elseif number == 'double' then
         packers['number'] = function (buffer, n)
-            if floor(n) ~= n or n ~= n or n > 1.7976931348623e+308 or n < -1.7976931348623e+308 then
-                return packers['double'](buffer, n)
-            else
+            if floor(n) == n and n < maxinteger and n > mininteger then
                 return packers['integer'](buffer, n)
+            else
+                return packers['double'](buffer, n)
             end
         end
     else
@@ -1109,10 +1111,14 @@ if NUMBER_INTEGRAL then
     packers['float'] = packers['integer']
     set_number'integer'
 elseif SIZEOF_NUMBER == 4 then
+    maxinteger = 16777215
+    mininteger = -maxinteger
     packers['double'] = packers['float']
     m.small_lua = true
     set_number'float'
 else
+    maxinteger = 9007199254740991
+    mininteger = -maxinteger
     set_number'double'
     if SIZEOF_NUMBER > 8 then
         m.long_double = true
@@ -1120,7 +1126,7 @@ else
 end
 set_array'without_hole'
 
-m._VERSION = '0.3.4'
+m._VERSION = '0.3.5'
 m._DESCRIPTION = "lua-MessagePack : a pure Lua implementation"
 m._COPYRIGHT = "Copyright (c) 2012-2016 Francois Perrad"
 return m

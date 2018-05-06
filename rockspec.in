@@ -24,5 +24,5 @@ build = {
     modules = {
         ['MessagePack']     = 'src/MessagePack.lua',
     },
-    copy_directories = { 'doc', 'test' },
+    copy_directories = { 'docs', 'test' },
 }

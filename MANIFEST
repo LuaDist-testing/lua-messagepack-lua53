@@ -3,10 +3,9 @@ COPYRIGHT
 MANIFEST
 Makefile
 README.md
-doc/Makefile
-doc/doc.css
-doc/index.html
-doc/msgpack.html
+docs/index.md
+docs/messagepack.md
+mkdocs.yml
 msgpack.org.md
 rockspec.in
 rockspec.lua53.in

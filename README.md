@@ -19,13 +19,13 @@ And it's really fast with [LuaJIT](http://luajit.org).
 Links
 -----
 
-The homepage is at [http://fperrad.github.io/lua-MessagePack/](http://fperrad.github.io/lua-MessagePack/),
-and the sources are hosted at [http://github.com/fperrad/lua-MessagePack/](http://github.com/fperrad/lua-MessagePack/).
+The homepage is at <http://fperrad.github.io/lua-MessagePack/>,
+and the sources are hosted at <http://github.com/fperrad/lua-MessagePack/>.
 
 Copyright and License
 ---------------------
 
-Copyright (c) 2012-2015 Francois Perrad
+Copyright (c) 2012-2016 Francois Perrad
 
 This library is licensed under the terms of the MIT/X11 license, like Lua itself.
 

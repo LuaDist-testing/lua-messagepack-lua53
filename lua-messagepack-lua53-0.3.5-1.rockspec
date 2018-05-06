@@ -1,17 +1,17 @@
 -- This file was automatically generated for the LuaDist project.
 
 package = 'lua-MessagePack-lua53'
-version = '0.3.4-1'
+version = '0.3.5-1'
 -- LuaDist source
 source = {
-  tag = "0.3.4-1",
+  tag = "0.3.5-1",
   url = "git://github.com/LuaDist-testing/lua-messagepack-lua53.git"
 }
 -- Original source
 -- source = {
---     url = 'http://sites.google.com/site/fperrad/lua-messagepack-0.3.4.tar.gz',
---     md5 = 'decc82d7f71b9f937aa4869ade90335b',
---     dir = 'lua-MessagePack-0.3.4',
+--     url = 'http://sites.google.com/site/fperrad/lua-messagepack-0.3.5.tar.gz',
+--     md5 = '00f5819b06e071696848776fefb6f9a7',
+--     dir = 'lua-MessagePack-0.3.5',
 -- }
 description = {
     summary = "a pure Lua implementation of the MessagePack serialization format",
@@ -32,5 +32,5 @@ build = {
     modules = {
         ['MessagePack']     = 'src5.3/MessagePack.lua',
     },
-    copy_directories = { 'doc', 'test' },
+    copy_directories = { 'docs', 'test' },
 }

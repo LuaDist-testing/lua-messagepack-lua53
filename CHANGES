@@ -1,5 +1,9 @@
 Revision history for lua-MessagePack
 
+0.3.5  Sat Oct 22 22:30:00 2016
+	fix float/integer detection
+	refactor doc with Markdown and MkDocs
+
 0.3.4  Fri Feb  5 10:30:00 2016
 	handle long double
 	handle NaN (like nil) as table index
