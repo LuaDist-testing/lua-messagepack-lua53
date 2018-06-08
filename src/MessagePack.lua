@@ -60,7 +60,10 @@ local function checktype (caller, narg, arg, tname)
 end
 
 local packers = setmetatable({}, {
-    __index = function (t, k) error("pack '" .. k .. "' is unimplemented") end
+    __index = function (t, k)
+        if k == 1 then return end   -- allows ipairs
+        error("pack '" .. k .. "' is unimplemented")
+    end
 })
 m.packers = packers
 
@@ -796,7 +799,7 @@ unpackers = setmetatable({
         elseif k > 0xDF then
             return function (c, val) return val - 0x100 end
         else
-            return function () error("unpack '" .. format('0x%X', k) .. "' is unimplemented") end
+            return function () error("unpack '" .. format('%#x', k) .. "' is unimplemented") end
         end
     end
 })
@@ -838,7 +841,7 @@ function m.unpack (s)
     checktype('unpack', 1, s, 'string')
     local cursor = cursor_string(s)
     local data = unpack_cursor(cursor)
-    if cursor.i < cursor.j then
+    if cursor.i <= cursor.j then
         error "extra bytes"
     end
     return data
@@ -887,9 +890,9 @@ else
 end
 set_array'without_hole'
 
-m._VERSION = '0.5.0'
+m._VERSION = '0.5.1'
 m._DESCRIPTION = "lua-MessagePack : a pure Lua implementation"
-m._COPYRIGHT = "Copyright (c) 2012-2017 Francois Perrad"
+m._COPYRIGHT = "Copyright (c) 2012-2018 Francois Perrad"
 return m
 --
 -- This library is licensed under the terms of the MIT/X11 license,

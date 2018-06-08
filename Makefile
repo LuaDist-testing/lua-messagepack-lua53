@@ -4,7 +4,7 @@ VERSION := $(shell cd src && $(LUA) -e "m = require [[MessagePack]]; print(m._VE
 TARBALL := lua-messagepack-$(VERSION).tar.gz
 REV     := 1
 
-LUAVER  := 5.1
+LUAVER  := 5.2
 PREFIX  := /usr/local
 DPREFIX := $(DESTDIR)$(PREFIX)
 LIBDIR  := $(DPREFIX)/share/lua/$(LUAVER)
@@ -101,7 +101,7 @@ coverage:
 coveralls:
 	rm -f src/luacov.stats.out src/luacov.report.out
 	cd $(SRC) && prove --exec="$(LUA) -lluacov" ../test/*.t
-	cd $(SRC) && luacov-coveralls -e ^/usr -e %.t$
+	cd $(SRC) && luacov-coveralls -e /HERE/ -e %.t$
 
 README.html: README.md
 	Markdown.pl README.md > README.html

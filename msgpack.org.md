@@ -38,6 +38,6 @@ Links
 Copyright and License
 ---------------------
 
-Copyright (c) 2012-2017 Francois Perrad [![rank](https://www.openhub.net/accounts/4780/widgets/account_rank.gif)](https://www.openhub.net/accounts/4780)
+Copyright (c) 2012-2018 Francois Perrad [![rank](https://www.openhub.net/accounts/4780/widgets/account_rank.gif)](https://www.openhub.net/accounts/4780)
 
 This library is licensed under the terms of the MIT/X11 license, like Lua itself.

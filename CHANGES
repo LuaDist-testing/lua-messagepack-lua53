@@ -1,5 +1,9 @@
 Revision history for lua-MessagePack
 
+0.5.1  Sat Jan 20 19:30:00 2018
+	fix extra bytes detection (see PR #26)
+	allows ipairs(mp.packers) (see PR #27)
+
 0.5.0  Fri Mar 10 17:07:20 2017
 	export unpack_cursor instead of unpackers (see issue #23)
 

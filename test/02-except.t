@@ -2,7 +2,7 @@
 
 require 'Test.More'
 
-plan(22)
+plan(24)
 
 local mp = require 'MessagePack'
 
@@ -42,7 +42,7 @@ error_like( function ()
 error_like( function ()
                 mp.unpack(string.char(0xC1))
             end,
-            "unpack '0xC1' is unimplemented" )
+            "unpack '0xc1' is unimplemented" )
 
 is( mp.unpack(mp.pack("text")), "text" )
 
@@ -53,6 +53,11 @@ error_like( function ()
 
 error_like( function ()
                 mp.unpack(mp.pack("text") .. "more")
+            end,
+            "extra bytes" )
+
+error_like( function ()
+                mp.unpack(mp.pack("text") .. "1")
             end,
             "extra bytes" )
 
@@ -109,6 +114,10 @@ error_like( function ()
 
 lives_ok( function ()
                 mp.packers['fixext4']({}, 1, '1234')
-            end,
-            "fixext4" )
+          end,
+          "fixext4" )
 
+lives_ok( function ()
+                for _ in ipairs(mp.packers) do end
+           end,
+           "cannot iterate packers" )
