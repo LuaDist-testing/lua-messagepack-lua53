@@ -1,0 +1,53 @@
+Revision history for lua-MessagePack
+
+0.5.0  Fri Mar 10 17:07:20 2017
+	export unpack_cursor instead of unpackers (see issue #23)
+
+0.4.0  Thu Dec  8 10:30:00 2016
+	refactor without types_map indirection
+	remove set_number'integer'
+
+0.3.7  Sun Dec  4 17:30:00 2016
+	better use of string.pack (Lua 5.3)
+
+0.3.6  Wed Nov 30 09:30:00 2016
+	fix pack float with Lua 5.3
+	fix behaviour with LUA_32BITS
+
+0.3.5  Sat Oct 22 22:30:00 2016
+	fix float/integer detection
+	refactor doc with Markdown and MkDocs
+
+0.3.4  Fri Feb  5 10:30:00 2016
+	handle long double
+	handle NaN (like nil) as table index
+
+0.3.3  Sat May 30 16:30:00 2015
+	shadow _ENV (see PR #12)
+	unsigned packer becomes the default for integer (see issue #13)
+	set_integer marked as deprecated
+	handle nil as table index (see issue #14)
+
+0.3.2  Wed Jan 14 20:30:00 2015
+	add variant for Lua 5.3
+	compat Lua 5.3
+
+0.3.1  Sun May  4 18:30:00 2014
+	add option set_array'always_as_map'
+	fix issue #6
+
+0.3.0  Sun Sep  1 15:30:00 2013
+	compliant with specifications v5
+
+0.2.2  Sun Aug 25 09:30:00 2013
+	fix packer when downcast double->float
+
+0.2.1  Thu Nov 29 19:30:00 2012
+	add set_array
+
+0.2.0  Sat Nov 17 15:30:00 2012
+	INCOMPATIBILITY : now, unpacker accepts a ltn12.source instead of a file
+
+0.1.0  Sun Nov 11 09:30:00 2012
+	First release
+

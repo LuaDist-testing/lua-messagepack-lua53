@@ -1,0 +1,9 @@
+site_name: lua-MessagePack
+site_description: a pure Lua implementation (spec v5)
+site_author: François Perrad
+repo_url: https://github.com/fperrad/lua-MessagePack
+pages:
+- Home: index.md
+- API: messagepack.md
+theme: mkdocs
+copyright: Copyright &copy; 2012-2017 Fran&ccedil;ois Perrad
